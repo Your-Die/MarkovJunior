@@ -1,0 +1,16 @@
+{
+    "name": "MarkovJunior.Runtime",
+    "rootNamespace": "",
+    "references": [
+        "GUID:86bfb8786883a5d4bbb39c9267050968"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
