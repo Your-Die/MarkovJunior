@@ -66,7 +66,7 @@ static class Program
                     string outputname = gif ? $"output/{interpreter.counter}" : $"output/{name}_{seed}";
                     if (FZ == 1 || iso)
                     {
-                        var (bitmap, WIDTH, HEIGHT) = Graphics.Render(result, FX, FY, FZ, colors, pixelsize, gui);
+                        var (bitmap, WIDTH, HEIGHT) = Graphics.Render(result, FX, FY, FZ, colors, pixelsize, gui, GUI.BACKGROUND);
                         if (gui > 0) GUI.Draw(name, interpreter.root, interpreter.current, bitmap, WIDTH, HEIGHT, customPalette);
                         Graphics.SaveBitmap(bitmap, WIDTH, HEIGHT, outputname + ".png");
                     }

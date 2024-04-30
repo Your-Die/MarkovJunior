@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-static class Graphics
+public static class Graphics
 {
     private static readonly IBitMapLoader Loader = BitMapLoaderFactory.Create();
     
@@ -17,15 +17,15 @@ static class Graphics
         Loader.SaveBitmap(data, width, height, filename);
     }
 
-    public static (int[], int, int) Render(byte[] state, int MX, int MY, int MZ, int[] colors, int pixelsize, int MARGIN) => MZ == 1 ? BitmapRender(state, MX, MY, colors, pixelsize, MARGIN) : IsometricRender(state, MX, MY, MZ, colors, pixelsize, MARGIN);
+    public static (int[], int, int) Render(byte[] state, int MX, int MY, int MZ, int[] colors, int pixelsize, int MARGIN, int background) => MZ == 1 ? BitmapRender(state, MX, MY, colors, pixelsize, MARGIN, background) : IsometricRender(state, MX, MY, MZ, colors, pixelsize, MARGIN, background);
 
-    public static (int[], int, int) BitmapRender(byte[] state, int MX, int MY, int[] colors, int pixelsize, int MARGIN)
+    public static (int[], int, int) BitmapRender(byte[] state, int MX, int MY, int[] colors, int pixelsize, int MARGIN, int background)
     {
         int WIDTH = MARGIN + MX * pixelsize, HEIGHT = MY * pixelsize;
         int TOTALWIDTH = WIDTH, TOTALHEIGHT = HEIGHT;
         //int TOTALWIDTH = 189 + MARGIN, TOTALHEIGHT = 189;
         int[] bitmap = new int[TOTALWIDTH * TOTALHEIGHT];
-        for (int i = 0; i < bitmap.Length; i++) bitmap[i] = GUI.BACKGROUND;
+        for (int i = 0; i < bitmap.Length; i++) bitmap[i] = background;
         //for (int i = 0; i < bitmap.Length; i++) bitmap[i] = 255 << 24;
 
         int DX = (TOTALWIDTH - WIDTH) / 2;
@@ -46,7 +46,7 @@ static class Graphics
     }
 
     static readonly Dictionary<int, Sprite> sprites = new();
-    public static (int[], int, int) IsometricRender(byte[] state, int MX, int MY, int MZ, int[] colors, int blocksize, int MARGIN)
+    public static (int[], int, int) IsometricRender(byte[] state, int MX, int MY, int MZ, int[] colors, int blocksize, int MARGIN, int background)
     {
         var voxels = new List<Voxel>[MX + MY + MZ - 2];
         var visibleVoxels = new List<Voxel>[MX + MY + MZ - 2];
@@ -99,7 +99,7 @@ static class Graphics
         //const int WIDTH = 330, HEIGHT = 330;
 
         int[] screen = new int[(MARGIN + WIDTH) * HEIGHT];
-        for (int i = 0; i < screen.Length; i++) screen[i] = GUI.BACKGROUND;
+        for (int i = 0; i < screen.Length; i++) screen[i] = background;
 
         void Blit(int[] sprite, int SX, int SY, int x, int y, int r, int g, int b)
         {
