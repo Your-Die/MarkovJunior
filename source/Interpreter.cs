@@ -4,7 +4,7 @@ using System;
 using System.Xml.Linq;
 using System.Collections.Generic;
 
-class Interpreter
+public class Interpreter
 {
     public Branch root, current;
     public Grid grid;
