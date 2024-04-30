@@ -2,37 +2,19 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
 
 static class Graphics
 {
+    private static readonly IBitMapLoader Loader = BitMapLoaderFactory.Create();
+    
     public static (int[], int, int, int) LoadBitmap(string filename)
     {
-        try
-        {
-            using var image = Image.Load<Bgra32>(filename);
-            int width = image.Width, height = image.Height;
-            int[] result = new int[width * height];
-            image.CopyPixelDataTo(MemoryMarshal.Cast<int, Bgra32>(result));
-            return (result, width, height, 1);
-        }
-        catch (Exception) { return (null, -1, -1, -1); }
+        return Loader.LoadBitmap(filename);
     }
 
-    unsafe public static void SaveBitmap(int[] data, int width, int height, string filename)
+    public static void SaveBitmap(int[] data, int width, int height, string filename)
     {
-        if (width <= 0 || height <= 0 || data.Length != width * height)
-        {
-            Console.WriteLine($"ERROR: wrong image width * height = {width} * {height}");
-            return;
-        }
-        fixed (int* pData = data)
-        {
-            using var image = Image.WrapMemory<Bgra32>(pData, width, height);
-            image.SaveAsPng(filename);
-        }
+        Loader.SaveBitmap(data, width, height, filename);
     }
 
     public static (int[], int, int) Render(byte[] state, int MX, int MY, int MZ, int[] colors, int pixelsize, int MARGIN) => MZ == 1 ? BitmapRender(state, MX, MY, colors, pixelsize, MARGIN) : IsometricRender(state, MX, MY, MZ, colors, pixelsize, MARGIN);
