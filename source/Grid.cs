@@ -28,10 +28,7 @@ public class Grid
         g.MZ = MZ;
         string valueString = xelem.Get<string>("values", null)?.Replace(" ", "");
         if (valueString == null)
-        {
-            Interpreter.WriteLine("no values specified");
-            return null;
-        }
+            throw new ArgumentException("no values specified");
 
         g.C = (byte)valueString.Length;
         g.values = new Dictionary<char, byte>();
@@ -42,15 +39,12 @@ public class Grid
             char symbol = valueString[i];
             if (g.values.ContainsKey(symbol))
             {
-                Interpreter.WriteLine($"repeating value {symbol} at line {xelem.LineNumber()}");
-                return null;
+                throw new ArgumentException($"repeating value {symbol} at line {xelem.LineNumber()}");
             }
-            else
-            {
-                g.characters[i] = symbol;
-                g.values.Add(symbol, i);
-                g.waves.Add(symbol, 1 << i);
-            }
+
+            g.characters[i] = symbol;
+            g.values.Add(symbol, i);
+            g.waves.Add(symbol, 1 << i);
         }
 
         string transparentString = xelem.Get<string>("transparent", null);
@@ -62,15 +56,10 @@ public class Grid
         {
             char symbol = xunion.Get<char>("symbol");
             if (g.waves.ContainsKey(symbol))
-            {
-                Interpreter.WriteLine($"repeating union type {symbol} at line {xunion.LineNumber()}");
-                return null;
-            }
-            else
-            {
-                int w = g.Wave(xunion.Get<string>("values"));
-                g.waves.Add(symbol, w);
-            }
+                throw new ArgumentException($"repeating union type {symbol} at line {xunion.LineNumber()}");
+
+            int w = g.Wave(xunion.Get<string>("values"));
+            g.waves.Add(symbol, w);
         }
 
         g.state = new byte[MX * MY * MZ];

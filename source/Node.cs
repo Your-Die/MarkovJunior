@@ -16,10 +16,7 @@ public abstract class Node
     public static Node Factory(XElement xelem, bool[] symmetry, Interpreter ip, Grid grid)
     {
         if (!nodenames.Contains(xelem.Name.LocalName))
-        {
-            Interpreter.WriteLine($"unknown node type \"{xelem.Name}\" at line {xelem.LineNumber()}");
-            return null;
-        }
+            throw new ArgumentException($"unknown node type \"{xelem.Name}\" at line {xelem.LineNumber()}");
 
         Node result = xelem.Name.LocalName switch
         {
@@ -60,8 +57,7 @@ public abstract class Branch : Node
         bool[] symmetry = SymmetryHelper.GetSymmetry(ip.grid.MZ == 1, symmetryString, parentSymmetry);
         if (symmetry == null)
         {
-            Interpreter.WriteLine($"unknown symmetry {symmetryString} at line {xelem.LineNumber()}");
-            return false;
+            throw new ArgumentException($"unknown symmetry {symmetryString} at line {xelem.LineNumber()}");
         }
 
         XElement[] xchildren = xelem.Elements(nodenames).ToArray();

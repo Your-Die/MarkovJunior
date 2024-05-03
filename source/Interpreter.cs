@@ -16,28 +16,30 @@ public class Interpreter
     public List<(int, int, int)> changes;
     public List<int> first;
     public int counter;
-    
+
     public bool gif;
 
-    Interpreter() { }
+    Interpreter()
+    {
+    }
+
     public static Interpreter Load(XElement xelem, int MX, int MY, int MZ)
     {
         Interpreter ip = new();
         ip.origin = xelem.Get("origin", false);
+
         ip.grid = Grid.Load(xelem, MX, MY, MZ);
         if (ip.grid == null)
-        {
-            Console.WriteLine("failed to load grid");
-            return null;
-        }
+            throw new InvalidOperationException("Failed to load grid");
+
         ip.startgrid = ip.grid;
 
         string symmetryString = xelem.Get<string>("symmetry", null);
-        bool[] symmetry = SymmetryHelper.GetSymmetry(ip.grid.MZ == 1, symmetryString, AH.Array1D(ip.grid.MZ == 1 ? 8 : 48, true));
+        bool[] symmetry =
+            SymmetryHelper.GetSymmetry(ip.grid.MZ == 1, symmetryString, AH.Array1D(ip.grid.MZ == 1 ? 8 : 48, true));
         if (symmetry == null)
         {
-            WriteLine($"unknown symmetry {symmetryString} at line {xelem.LineNumber()}");
-            return null;
+            throw new ArgumentException($"unknown symmetry {symmetryString} at line {xelem.LineNumber()}");
         }
 
         Node topnode = Node.Factory(xelem, symmetry, ip, ip.grid);
@@ -81,6 +83,6 @@ public class Interpreter
         yield return (grid.state, grid.characters, grid.MX, grid.MY, grid.MZ);
     }
 
-    public static void WriteLine(string s) => Console.WriteLine(s);
-    public static void Write(string s) => Console.Write(s);
+    public static void WriteLine(string s) => throw new ArgumentException(s);
+    public static void Write(string s) => throw new ArgumentException(s);
 }
